@@ -1,1 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pony Dressage Tracker</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #f4f6f8; }
+    h1 { text-align: center; }
 
+    input, button {
+      padding: 8px;
+      margin: 5px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background: #333;
+      color: white;
+    }
+
+    .qual68 { background: #d4edda; }
+    .qual70 { background: gold; font-weight: bold; }
+  </style>
+</head>
+
+<body>
+
+<h1>FEI Pony Dressage Rankings</h1>
+
+<div style="text-align:center;">
+  <input id="rider" placeholder="Rider name">
+  <input id="pony" placeholder="Pony name">
+  <input id="score" type="number" placeholder="Score %" step="0.1">
+  <button onclick="add()">Add</button>
+</div>
+
+<table id="table">
+  <tr>
+    <th>Rider</th>
+    <th>Pony</th>
+    <th>Score</th>
+    <th>Status</th>
+  </tr>
+</table>
+
+<script>
+let riders = [];
+
+function add() {
+  let rider = document.getElementById("rider").value;
+  let pony = document.getElementById("pony").value;
+  let score = parseFloat(document.getElementById("score").value);
+
+  if (!rider || !pony || !score) return;
+
+  riders.push({ rider, pony, score });
+  riders.sort((a,b) => b.score - a.score);
+
+  render();
+}
+
+function render() {
+  let table = document.getElementById("table");
+
+  table.innerHTML = `
+    <tr>
+      <th>Rider</th>
+      <th>Pony</th>
+      <th>Score</th>
+      <th>Status</th>
+    </tr>
+  `;
+
+  riders.forEach(r => {
+    let status = "—";
+    let cls = "";
+
+    if (r.score >= 70) {
+      status = "⭐ European (70%+)";
+      cls = "qual70";
+    } else if (r.score >= 68) {
+      status = "✅ International (68%+)";
+      cls = "qual68";
+    }
+
+    table.innerHTML += `
+      <tr class="${cls}">
+        <td>${r.rider}</td>
+        <td>${r.pony}</td>
+        <td>${r.score}</td>
+        <td>${status}</td>
+      </tr>
+    `;
+  });
+}
+</script>
+
+</body>
+</html>
